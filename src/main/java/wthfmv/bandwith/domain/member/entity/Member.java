@@ -23,7 +23,7 @@ public class Member {
     @Column(name = "member_token")
     private String token;
 
-    @Column(name = "member_LoginType")
+    @Column(name = "member_login_type")
     private LoginType loginType;
 
     @Column(name = "member_birth")
@@ -35,7 +35,7 @@ public class Member {
     @Column(name = "member_introduce")
     private String introduce;
 
-    @Column(name = "member_profileImage")
+    @Column(name = "member_profile_image")
     private String profileImage;
 
     public Member(String token, LocalDate birth, String name, String introduce, String profileImage) {
