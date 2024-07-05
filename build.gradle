@@ -23,6 +23,13 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	compileOnly 'org.projectlombok:lombok:1.18.32'
+	annotationProcessor 'org.projectlombok:lombok:1.18.32'
+
+	implementation 'com.google.auth:google-auth-library-oauth2-http:1.19.0'
+	implementation 'com.google.oauth-client:google-oauth-client-jetty:1.32.1'
+	implementation 'com.google.apis:google-api-services-oauth2:v2-rev157-1.25.0'
 }
 
 tasks.named('bootBuildImage') {
