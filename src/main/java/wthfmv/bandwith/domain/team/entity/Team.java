@@ -5,8 +5,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import wthfmv.bandwith.domain.team.service.TeamService;
+import wthfmv.bandwith.domain.teamMember.entity.TeamMember;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -34,4 +37,15 @@ public class Team {
 
     @Column(name = "team_created_at")
     private LocalDate createdAt;
+
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TeamMember> teamMembers;
+
+    public Team(String name, int limitMember, String profileImage){
+        this.name = name;
+        this.limitMember = limitMember;
+        this.profileImage = profileImage;
+        this.createdAt = LocalDate.now();
+        this.policy = Policy.FREE;
+    }
 }

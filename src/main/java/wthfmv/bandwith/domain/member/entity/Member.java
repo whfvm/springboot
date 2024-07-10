@@ -5,8 +5,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import wthfmv.bandwith.domain.teamMember.entity.TeamMember;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -38,6 +40,8 @@ public class Member {
     @Column(name = "member_profile_image")
     private String profileImage;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TeamMember> teamMembers;
     public Member(String token, LocalDate birth, String name, String introduce, String profileImage) {
         this.token = token;
         this.birth = birth;
