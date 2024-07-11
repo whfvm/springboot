@@ -1,0 +1,55 @@
+name: deploy_spring_to_ncp
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # 자바 17 버전 설정
+      - name: Setup JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'adopt'
+
+      # applicaion.yml 생성
+      - name: Make application.properties
+        run: |
+          cd ./src/main/resources
+          touch ./applicaion.properties
+          echo "${{ secrets.APPLICATION }}" > ./application.properties
+        shell: bash
+
+      # gradle 빌드
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build -x test
+
+      # 도커 이미지 빌드, push
+      - name: Build and push Docker images
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          docker build -t ${{ secrets.DOCKER_REPO }}:spring .
+          docker push ${{ secrets.DOCKER_REPO }}:spring
+
+      # 서버에 접속, 스크립트 실행
+      - name: SSH and run scripts
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USERNAME }}
+          password: ${{ secrets.HOST_KEY }}
+          port: 22
+          script: |
+            docker pull ${{ secrets.DOCKER_REPO }}:spring
+            docker stop spring-container
+            docker rm spring-container
+            docker run -d -m 200M --memory-swap 300M --network="host" --name spring1 ${{ secrets.DOCKER_REPO }}:spring      
