@@ -42,4 +42,34 @@ public class JwtProvider {
         Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
         return claimsJws.getBody().getSubject();
     }
+
+    /**
+     * RefreshToken 생성기
+     * @return
+     */
+    public String createRefreshToken(){
+        Date now = new Date();
+
+        return Jwts.builder()
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + Duration.ofHours((1)).toMillis()))
+                .signWith(key)
+                .compact();
+    }
+
+    /**
+     * AccessToken 생성기
+     * @param uuid 유저 uuid를 받아 uuid 생성
+     * @return
+     */
+    public String createAccessToken(UUID uuid){
+        Date now = new Date();
+
+        return Jwts.builder()
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + Duration.ofMinutes((3)).toMillis()))
+                .setSubject(uuid.toString())
+                .signWith(key)
+                .compact();
+    }
 }
