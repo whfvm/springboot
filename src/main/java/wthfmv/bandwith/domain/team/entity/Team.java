@@ -19,9 +19,8 @@ import java.util.UUID;
 public class Team {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "member_id", columnDefinition = "BINARY(16)")
-    private UUID id;
+    @Column(name = "member_id")
+    private String id;
 
     @Column(name = "team_name")
     private String name;

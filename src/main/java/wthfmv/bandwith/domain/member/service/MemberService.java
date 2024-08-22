@@ -1,23 +1,65 @@
 package wthfmv.bandwith.domain.member.service;
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.oauth2.Oauth2;
-import com.google.api.services.oauth2.model.Userinfo;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wthfmv.bandwith.domain.member.entity.LoginType;
+import wthfmv.bandwith.domain.member.dto.res.TokenRes;
 import wthfmv.bandwith.domain.member.entity.Member;
 import wthfmv.bandwith.domain.member.repository.MemberRepository;
+import wthfmv.bandwith.domain.refreshToken.entity.RefreshToken;
+import wthfmv.bandwith.domain.refreshToken.repository.RefreshTokenRepository;
+import wthfmv.bandwith.global.security.jwt.JwtProvider;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+    private final MemberRepository memberRepository;
+    private final JwtProvider jwtProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    private  final MemberRepository memberRepository;
+    @Transactional
+    public TokenRes googleOAuth(String id) {
+        Optional<Member> optionalMember = memberRepository.findByProviderAndProviderId("google", id);
+
+        if(optionalMember.isPresent()){
+            // 이미 가입한 유저면
+            Member member = optionalMember.get();
+
+            String accessToken = jwtProvider.createAccessToken(member.getId());
+            String refreshToken = jwtProvider.createRefreshToken();
+
+            long count = refreshTokenRepository.countByMember(member);
+
+            if (count >= 4) {
+                RefreshToken oldestToken = refreshTokenRepository.findFirstByMemberOrderByCreatedAtAsc(member);
+                refreshTokenRepository.delete(oldestToken);
+            }
+
+            RefreshToken refreshTokenObject = new RefreshToken(refreshToken, member, LocalDateTime.now());
+            refreshTokenRepository.save(refreshTokenObject);
+
+            return new TokenRes(accessToken, refreshToken);
+        } else {
+            // 가입하지 않은 유저면
+            Member newMember = new Member("google", id);
+
+            memberRepository.save(newMember);
+
+            String accessToken = jwtProvider.createAccessToken(newMember.getId());
+            String refreshToken = jwtProvider.createRefreshToken();
+
+            RefreshToken refreshTokenObject = new RefreshToken(refreshToken, newMember, LocalDateTime.now());
+            refreshTokenRepository.save(refreshTokenObject);
+
+            return new TokenRes(accessToken, refreshToken);
+        }
+    }
 }

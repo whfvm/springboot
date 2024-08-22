@@ -22,11 +22,11 @@ public class Member {
     @Column(name = "member_id", columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name = "member_token")
-    private String token;
+    @Column(name = "member_provider")
+    private String provider;
 
-    @Column(name = "member_login_type")
-    private LoginType loginType;
+    @Column(name = "member_provider_id")
+    private String providerId;
 
     @Column(name = "member_birth")
     private LocalDate birth;
@@ -42,11 +42,19 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeamMember> teamMembers;
-    public Member(String token, LocalDate birth, String name, String introduce, String profileImage) {
-        this.token = token;
+    public Member(LocalDate birth, String name, String introduce, String profileImage) {
         this.birth = birth;
         this.name = name;
         this.introduce = introduce;
         this.profileImage = profileImage;
+    }
+
+    public Member(String provider, String providerId){
+        this.birth = LocalDate.now();
+        this.introduce = "자기소개를 작성해 주세요";
+        this.profileImage = null;
+        this.name = "BANDWITH";
+        this.provider = provider;
+        this.providerId = providerId;
     }
 }
