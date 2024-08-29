@@ -50,4 +50,4 @@ jobs:
             docker pull ${{ secrets.DOCKER_REPO }}:spring
             docker stop spring1 || true
             docker rm spring1 || true
-            docker run -d --name spring1 -p 8080:8080 ${{ secrets.DOCKER_REPO }}:spring
+            docker run -d --name spring1 --network host -p 8080:8080 ${{ secrets.DOCKER_REPO }}:spring
