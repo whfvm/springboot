@@ -40,6 +40,18 @@ jobs:
           docker build -t ${{ secrets.DOCKER_REPO }}:spring .
           docker push ${{ secrets.DOCKER_REPO }}:spring
 
+      # AWS 인증
+      - name: AWS
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ap-northeast-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      # AWS 인증 확인
+      - name: AWS check
+        run: aws configure list
+
       # 서버에 접속, 스크립트 실행
       - name: SSH and run scripts
         uses: appleboy/ssh-action@master
@@ -52,4 +64,4 @@ jobs:
             docker pull ${{ secrets.DOCKER_REPO }}:spring
             docker stop spring1
             docker rm spring1
-            docker run -d -m 200M --memory-swap 300M --network="host" --name spring1 ${{ secrets.DOCKER_REPO }}:spring      
+            docker run -d --network="host" --name spring1 ${{ secrets.DOCKER_REPO }}:spring      
