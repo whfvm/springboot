@@ -14,6 +14,9 @@ import wthfmv.bandwith.domain.team.service.TeamService;
 public class TeamController {
 
     private final TeamService teamService;
+    
+    // 멤버 탈퇴는 자유, 리더는 강제로 가능
+    // 신규 멤버는 리더만 가입 허가 내려줄 수 있음
 
     /**
      *
@@ -49,14 +52,11 @@ public class TeamController {
     }
 
     @GetMapping("/publish")
-    public ResponseEntity<String> publish(){
-        // 1. 요청자 uuid 가져와야 함
-        // 2. 서비스에 넘김
-        // 3. 서비스에서 토큰 발행
-
-        return ResponseEntity.ok().body(
-                "a"
-        );
+    public ResponseEntity<String> publish(
+            @RequestParam String bandID
+    ){
+        String publish = teamService.publish(bandID);
+        return ResponseEntity.ok().body(publish);
     }
 
     /**
@@ -69,6 +69,8 @@ public class TeamController {
             @RequestParam String code
     ){
         // 1. 토큰에서 멤버 uuid 가져옴
+
+        teamService.sign(code);
 
        return ResponseEntity.ok().body(
                "a"
