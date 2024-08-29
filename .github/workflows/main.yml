@@ -50,6 +50,6 @@ jobs:
           port: 22
           script: |
             docker pull ${{ secrets.DOCKER_REPO }}:spring
-            docker stop spring-container
-            docker rm spring-container
+            docker stop spring1
+            docker rm spring1
             docker run -d -m 200M --memory-swap 300M --network="host" --name spring1 ${{ secrets.DOCKER_REPO }}:spring      
