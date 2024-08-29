@@ -1,4 +1,4 @@
-name: deploy_spring_to_ncp
+name: deploy_spring_to_aws
 
 on:
   workflow_dispatch:
@@ -19,7 +19,7 @@ jobs:
           java-version: 17
           distribution: 'adopt'
 
-      # applicaion.yml 생성
+      # applicaion.properties 생성
       - name: Make application.properties
         run: |
           cd ./src/main/resources
