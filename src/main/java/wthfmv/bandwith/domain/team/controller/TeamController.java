@@ -2,10 +2,14 @@ package wthfmv.bandwith.domain.team.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import wthfmv.bandwith.domain.team.dto.req.Create;
+import wthfmv.bandwith.domain.team.dto.res.TeamRes;
 import wthfmv.bandwith.domain.team.service.TeamService;
+import wthfmv.bandwith.global.security.userDetails.CustomUserDetails;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,6 +34,34 @@ public class TeamController {
 
         return ResponseEntity.ok().body(
             "팀 저장 완료"
+        );
+    }
+
+    /**
+     * 팀 1개 정보 리턴
+     * @return
+     */
+    @GetMapping()
+    public ResponseEntity<?> team(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam(defaultValue = "a") String teamId
+    ){
+
+        String userUUID = customUserDetails.getUuid().toString();
+        TeamRes teamRes = teamService.team(teamId);
+
+        return ResponseEntity.ok().body(
+                teamRes
+        );
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> teamList(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+
+        String userUUID = customUserDetails.getUuid().toString();
+
+        return ResponseEntity.ok().body(
+                userUUID
         );
     }
 

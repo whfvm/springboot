@@ -38,7 +38,7 @@ public class MemberService {
 
             long count = refreshTokenRepository.countByMember(member);
 
-            if (count >= 4) {
+            if (count > 4) {
                 RefreshToken oldestToken = refreshTokenRepository.findFirstByMemberOrderByCreatedAtAsc(member);
                 refreshTokenRepository.delete(oldestToken);
             }

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wthfmv.bandwith.domain.member.entity.Member;
 import wthfmv.bandwith.domain.member.repository.MemberRepository;
 import wthfmv.bandwith.domain.team.dto.req.Create;
+import wthfmv.bandwith.domain.team.dto.res.TeamRes;
 import wthfmv.bandwith.domain.team.entity.Team;
 import wthfmv.bandwith.domain.team.repository.TeamRepository;
 import wthfmv.bandwith.domain.teamMember.entity.Position;
@@ -88,5 +89,14 @@ public class TeamService {
         } else {
            teamMemberRepository.save(new TeamMember(Position.MEMBER, member, team));
         }
+    }
+
+    @Transactional(readOnly = true)
+    public TeamRes team(String teamId) {
+        Team team = teamRepository.findById(UUID.fromString(teamId)).orElseThrow(
+                () -> new RuntimeException("해당 팀 없음")
+        );
+
+        return new TeamRes(team);
     }
 }

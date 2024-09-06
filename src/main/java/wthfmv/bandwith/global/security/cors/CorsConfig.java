@@ -22,13 +22,4 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .exposedHeaders("accessToken", "refreshToken");
     }
-
-//    @Bean
-//    public CorsFilter corsFilter(){
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        CorsConfiguration config = new CorsConfiguration();
-//        for(String origin : allowedOrigins){
-//
-//        }
-//    }
 }
