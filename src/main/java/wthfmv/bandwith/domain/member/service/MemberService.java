@@ -5,6 +5,8 @@ import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wthfmv.bandwith.domain.member.dto.req.MemberUpdateReq;
+import wthfmv.bandwith.domain.member.dto.res.MemberRes;
 import wthfmv.bandwith.domain.member.dto.res.TokenRes;
 import wthfmv.bandwith.domain.member.entity.Member;
 import wthfmv.bandwith.domain.member.repository.MemberRepository;
@@ -61,5 +63,21 @@ public class MemberService {
 
             return new TokenRes(accessToken, refreshToken);
         }
+    }
+
+    public MemberRes member(UUID uuid) {
+        Member member = memberRepository.findById(uuid).orElseThrow(
+                () -> new RuntimeException(uuid.toString() + "멤버 없음")
+        );
+
+        return new MemberRes(member);
+    }
+
+    public void update(UUID uuid, MemberUpdateReq memberUpdateReq) {
+        Member member = memberRepository.findById(uuid).orElseThrow(
+                () -> new RuntimeException(uuid.toString() + "멤버 없음")
+        );
+
+        member.update(memberUpdateReq);
     }
 }
