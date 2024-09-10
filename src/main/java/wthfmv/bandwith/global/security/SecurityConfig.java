@@ -29,7 +29,6 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity
                 .httpBasic(HttpBasicConfigurer::disable)
-                .cors(CorsConfigurer::disable)
                 .formLogin(FormLoginConfigurer::disable)
                 .csrf(CsrfConfigurer::disable)
                 .sessionManagement(SessionManagementConfigurer::disable)
