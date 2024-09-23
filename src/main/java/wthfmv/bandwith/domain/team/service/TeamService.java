@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import wthfmv.bandwith.domain.member.entity.Member;
 import wthfmv.bandwith.domain.member.repository.MemberRepository;
 import wthfmv.bandwith.domain.team.dto.req.Create;
+import wthfmv.bandwith.domain.team.dto.res.TeamListRes;
 import wthfmv.bandwith.domain.team.dto.res.TeamRes;
 import wthfmv.bandwith.domain.team.entity.Team;
 import wthfmv.bandwith.domain.team.repository.TeamRepository;
@@ -17,8 +18,10 @@ import wthfmv.bandwith.domain.teamMember.repository.TeamMemberRepository;
 import wthfmv.bandwith.global.security.jwt.JwtProvider;
 import wthfmv.bandwith.global.security.userDetails.CustomUserDetails;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +50,7 @@ public class TeamService {
 
         teamRepository.save(team);
 
-        TeamMember teamMember = new TeamMember(Position.LEADER, member, team);
+        TeamMember teamMember = new TeamMember(Position.LEADER, member, team, null);
 
         teamMemberRepository.save(teamMember);
     }
@@ -66,7 +69,7 @@ public class TeamService {
                 () -> new RuntimeException(customUserDetails.getUuid() + "멤버 없음")
         );
 
-        return jwtProvider.createParticipationCode(UUID.fromString(bandID));
+        return null;
     }
 
     @Transactional
@@ -87,7 +90,7 @@ public class TeamService {
         if(teamMemberRepository.findByMemberAndTeam(member, team).isPresent()){
             throw new RuntimeException("이미 가입된 멤버입니다.");
         } else {
-           teamMemberRepository.save(new TeamMember(Position.MEMBER, member, team));
+           teamMemberRepository.save(new TeamMember(Position.MEMBER, member, team, null));
         }
     }
 
@@ -98,5 +101,14 @@ public class TeamService {
         );
 
         return new TeamRes(team);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TeamListRes> list(String userUUID) {
+        List<TeamMember> teamMembers = teamMemberRepository.findByMember(UUID.fromString(userUUID));
+
+        return teamMembers.stream()
+                .map(TeamListRes::new)
+                .collect(Collectors.toList());
     }
 }

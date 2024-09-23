@@ -19,8 +19,9 @@ import java.util.UUID;
 public class Team {
 
     @Id
-    @Column(name = "member_id")
-    private String id;
+    @GeneratedValue
+    @Column(name = "team_id", updatable = false, nullable = false)
+    private UUID id;
 
     @Column(name = "team_name")
     private String name;

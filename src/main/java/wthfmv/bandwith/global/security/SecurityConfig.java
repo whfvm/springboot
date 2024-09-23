@@ -39,6 +39,8 @@ public class SecurityConfig {
                         //멤버 관련 API
                         .requestMatchers(HttpMethod.GET, "/member").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/member").authenticated()
+                        // 트랙 관련 API
+                        .requestMatchers(HttpMethod.POST, "/track").permitAll()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",

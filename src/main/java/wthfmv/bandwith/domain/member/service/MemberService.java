@@ -12,6 +12,11 @@ import wthfmv.bandwith.domain.member.entity.Member;
 import wthfmv.bandwith.domain.member.repository.MemberRepository;
 import wthfmv.bandwith.domain.refreshToken.entity.RefreshToken;
 import wthfmv.bandwith.domain.refreshToken.repository.RefreshTokenRepository;
+import wthfmv.bandwith.domain.team.entity.Team;
+import wthfmv.bandwith.domain.team.repository.TeamRepository;
+import wthfmv.bandwith.domain.teamMember.entity.Position;
+import wthfmv.bandwith.domain.teamMember.entity.TeamMember;
+import wthfmv.bandwith.domain.teamMember.repository.TeamMemberRepository;
 import wthfmv.bandwith.global.security.jwt.JwtProvider;
 
 import java.time.LocalDateTime;
@@ -26,6 +31,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final TeamRepository teamRepository;
+    private final TeamMemberRepository teamMemberRepository;
 
     @Transactional
     public TokenRes googleOAuth(String id) {
@@ -75,9 +82,13 @@ public class MemberService {
 
     public void update(UUID uuid, MemberUpdateReq memberUpdateReq) {
         Member member = memberRepository.findById(uuid).orElseThrow(
-                () -> new RuntimeException(uuid.toString() + "멤버 없음")
+                () -> new RuntimeException(uuid + "멤버 없음")
         );
 
         member.update(memberUpdateReq);
+
+        Team team = new Team(memberUpdateReq.getName() + "의 개인밴드", 1, null);
+        teamRepository.save(team);
+        teamMemberRepository.save(new TeamMember(Position.LEADER, member, team, null));
     }
 }

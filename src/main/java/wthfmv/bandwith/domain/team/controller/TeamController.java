@@ -7,9 +7,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import wthfmv.bandwith.domain.team.dto.req.Create;
+import wthfmv.bandwith.domain.team.dto.res.TeamListRes;
 import wthfmv.bandwith.domain.team.dto.res.TeamRes;
 import wthfmv.bandwith.domain.team.service.TeamService;
 import wthfmv.bandwith.global.security.userDetails.CustomUserDetails;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,7 +47,7 @@ public class TeamController {
     @GetMapping()
     public ResponseEntity<?> team(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam(defaultValue = "a") String teamId
+            @RequestParam String teamId
     ){
 
         String userUUID = customUserDetails.getUuid().toString();
@@ -56,13 +59,13 @@ public class TeamController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> teamList(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+    public ResponseEntity<List<TeamListRes>> teamList(@AuthenticationPrincipal CustomUserDetails customUserDetails){
 
         String userUUID = customUserDetails.getUuid().toString();
 
-        return ResponseEntity.ok().body(
-                userUUID
-        );
+        List<TeamListRes> teamListRes = teamService.list(userUUID);
+
+        return ResponseEntity.ok().body(teamListRes);
     }
 
     /**

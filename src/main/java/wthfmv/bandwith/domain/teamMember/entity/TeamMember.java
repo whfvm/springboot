@@ -26,6 +26,9 @@ public class TeamMember {
     @Column(name = "team_member_position")
     private Position position;
 
+    @Column(name = "team_member_part")
+    private String part;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "member_id")
@@ -36,9 +39,10 @@ public class TeamMember {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    public TeamMember(Position position, Member member, Team team){
+    public TeamMember(Position position, Member member, Team team, String part){
         this.position = position;
         this.member = member;
-        this.team =team;
+        this.team = team;
+        this.part = part;
     }
 }
