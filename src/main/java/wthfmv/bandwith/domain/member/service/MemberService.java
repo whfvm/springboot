@@ -87,8 +87,12 @@ public class MemberService {
 
         member.update(memberUpdateReq);
 
-        Team team = new Team(memberUpdateReq.getName() + "의 개인밴드", 1, null);
-        teamRepository.save(team);
-        teamMemberRepository.save(new TeamMember(Position.LEADER, member, team, null));
+        List<TeamMember> byMember = teamMemberRepository.findByMember(uuid);
+
+        if(byMember.isEmpty()){
+            Team team = new Team(memberUpdateReq.getName() + "의 개인밴드", 1, null);
+            teamRepository.save(team);
+            teamMemberRepository.save(new TeamMember(Position.LEADER, member, team, null));
+        }
     }
 }
