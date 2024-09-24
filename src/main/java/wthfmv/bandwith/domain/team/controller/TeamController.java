@@ -90,8 +90,8 @@ public class TeamController {
     public ResponseEntity<String> publish(
             @RequestParam String bandID
     ){
-        String publish = teamService.publish(bandID);
-        return ResponseEntity.ok().body(publish);
+        String randomCode = teamService.publish(bandID);
+        return ResponseEntity.ok().body(randomCode);
     }
 
     /**

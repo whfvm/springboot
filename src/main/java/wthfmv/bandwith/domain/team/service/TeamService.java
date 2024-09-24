@@ -69,9 +69,11 @@ public class TeamService {
         if(teamMemberRepository.existsByPositionAndTeamIdAndMemberId(Position.LEADER, UUID.fromString(teamId),customUserDetails.getUuid())){
             String randomCode = RandomStringUtils.random(6, true, true);
             joinCode.put(randomCode, teamId);
+
+            return randomCode;
         }
 
-        return null;
+        return "XXXXXX";
     }
 
     @Transactional
