@@ -84,6 +84,7 @@ public class TeamService {
         );
 
         String teamId = joinCode.get(code);
+        joinCode.remove(code);
 
         Team team = teamRepository.findById(UUID.fromString(teamId)).orElseThrow(
                 () -> new RuntimeException("해당 팀 없음")
