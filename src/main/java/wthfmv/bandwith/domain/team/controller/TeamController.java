@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import wthfmv.bandwith.domain.team.dto.req.TeamCreate;
+import wthfmv.bandwith.domain.team.dto.req.TeamCreateReq;
 import wthfmv.bandwith.domain.team.dto.res.TeamListRes;
 import wthfmv.bandwith.domain.team.dto.res.TeamRes;
 import wthfmv.bandwith.domain.team.service.TeamService;
@@ -26,13 +26,13 @@ public class TeamController {
 
     /**
      *
-     * @param teamCreate
+     * @param teamCreateReq
      * @return
      */
     @PostMapping()
-    public ResponseEntity<String> create(TeamCreate teamCreate){
+    public ResponseEntity<String> create(TeamCreateReq teamCreateReq){
 
-        teamService.create(teamCreate);
+        teamService.create(teamCreateReq);
 
         return ResponseEntity.ok().body(
             "팀 저장 완료"

@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class TeamCreate {
+public class TeamCreateReq {
     private String name;
     private String profileImage;
-    private int limitMember;
+    private Integer limitMember;
 }

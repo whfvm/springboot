@@ -5,8 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import wthfmv.bandwith.domain.team.dto.req.TeamCreate;
-import wthfmv.bandwith.domain.team.service.TeamService;
+import wthfmv.bandwith.domain.team.dto.req.TeamCreateReq;
 import wthfmv.bandwith.domain.teamMember.entity.TeamMember;
 
 import java.time.LocalDate;
@@ -50,10 +49,10 @@ public class Team {
         this.policy = Policy.FREE;
     }
 
-    public Team(TeamCreate teamCreate){
-        this.name = teamCreate.getName();
-        this.profileImage = teamCreate.getProfileImage();
-        this.limitMember = teamCreate.getLimitMember();
+    public Team(TeamCreateReq teamCreateReq){
+        this.name = teamCreateReq.getName();
+        this.profileImage = teamCreateReq.getProfileImage();
+        this.limitMember = teamCreateReq.getLimitMember();
         this.createdAt = LocalDate.now();
         this.policy = Policy.FREE;
     }
