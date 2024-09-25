@@ -103,12 +103,10 @@ public class TeamController {
     public ResponseEntity<String> sign(
             @RequestParam String code
     ){
-        // 1. 토큰에서 멤버 uuid 가져옴
-
         teamService.sign(code);
 
        return ResponseEntity.ok().body(
-               "a"
+               "가입완료"
        );
     }
 }
