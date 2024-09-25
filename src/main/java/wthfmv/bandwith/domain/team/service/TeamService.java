@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wthfmv.bandwith.domain.member.entity.Member;
 import wthfmv.bandwith.domain.member.repository.MemberRepository;
-import wthfmv.bandwith.domain.team.dto.req.Create;
+import wthfmv.bandwith.domain.team.dto.req.TeamCreate;
 import wthfmv.bandwith.domain.team.dto.res.TeamListRes;
 import wthfmv.bandwith.domain.team.dto.res.TeamRes;
 import wthfmv.bandwith.domain.team.entity.Team;
@@ -34,7 +34,7 @@ public class TeamService {
     private final Map<String, String> joinCode = new HashMap<>();
 
     @Transactional
-    public void create(Create create) {
+    public void create(TeamCreate teamCreate) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -43,15 +43,11 @@ public class TeamService {
                 () -> new RuntimeException(customUserDetails.getUuid() + "멤버 없음")
         );
 
-        Team team = new Team(
-                create.getName(),
-                create.getLimitMember(),
-                create.getProfileImage()
-        );
+        Team team = new Team(teamCreate);
 
-        teamRepository.save(team);
+        Team savedTeam = teamRepository.save(team);
 
-        TeamMember teamMember = new TeamMember(Position.LEADER, member, team, null);
+        TeamMember teamMember = new TeamMember(Position.LEADER, member, savedTeam, null);
 
         teamMemberRepository.save(teamMember);
     }

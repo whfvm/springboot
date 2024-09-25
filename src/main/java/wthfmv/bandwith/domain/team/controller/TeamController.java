@@ -3,10 +3,9 @@ package wthfmv.bandwith.domain.team.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import wthfmv.bandwith.domain.team.dto.req.Create;
+import wthfmv.bandwith.domain.team.dto.req.TeamCreate;
 import wthfmv.bandwith.domain.team.dto.res.TeamListRes;
 import wthfmv.bandwith.domain.team.dto.res.TeamRes;
 import wthfmv.bandwith.domain.team.service.TeamService;
@@ -27,13 +26,13 @@ public class TeamController {
 
     /**
      *
-     * @param create
+     * @param teamCreate
      * @return
      */
     @PostMapping()
-    public ResponseEntity<String> create(Create create){
+    public ResponseEntity<String> create(TeamCreate teamCreate){
 
-        teamService.create(create);
+        teamService.create(teamCreate);
 
         return ResponseEntity.ok().body(
             "팀 저장 완료"
