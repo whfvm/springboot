@@ -30,7 +30,7 @@ public class TeamController {
      * @return
      */
     @PostMapping()
-    public ResponseEntity<String> create(TeamCreateReq teamCreateReq){
+    public ResponseEntity<String> create(@RequestBody TeamCreateReq teamCreateReq){
 
         teamService.create(teamCreateReq);
 
