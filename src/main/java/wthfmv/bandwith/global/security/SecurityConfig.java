@@ -36,6 +36,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeRequest) -> authorizeRequest
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/login/**").permitAll()
+                        // 웹소켓 연결
+                        .requestMatchers("/ws/**").permitAll()
                         //멤버 관련 API
                         .requestMatchers(HttpMethod.GET, "/member").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/member").authenticated()

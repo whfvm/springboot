@@ -21,5 +21,12 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .exposedHeaders("accessToken", "refreshToken");
+
+        corsRegistry
+                .addMapping("/ws/**") // This line is explicitly for WebSocket connections
+                .allowedOriginPatterns(allowedOrigins)
+                .allowedHeaders("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .exposedHeaders("accessToken", "refreshToken");
     }
 }
