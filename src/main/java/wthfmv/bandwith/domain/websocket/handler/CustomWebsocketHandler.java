@@ -1,20 +1,26 @@
 package wthfmv.bandwith.domain.websocket.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import wthfmv.bandwith.domain.track.entity.Track;
+import wthfmv.bandwith.domain.track.service.TrackService;
 import wthfmv.bandwith.domain.websocket.message.WebsocketMessage;
 
 import java.util.*;
 
 @Component
+@RequiredArgsConstructor
 public class CustomWebsocketHandler extends TextWebSocketHandler {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final Map<String, Set<WebSocketSession>> sessionStore = new HashMap<>(); // Store sessions instead of session IDs
+    private final Map<String, Set<WebSocketSession>> sessionStore = new HashMap<>();
+
+    private final TrackService trackService;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -44,11 +50,12 @@ public class CustomWebsocketHandler extends TextWebSocketHandler {
         // 메시지 보내기
         for (WebSocketSession s : sessionSet) {
             if (s.isOpen()) { // 열려있으면
-                s.sendMessage(new TextMessage(websocketMessage.getQuery()));
+//                Optional<Track> track = trackService.updateAndGetTrack(websocketMessage.getTrackId());
+//                System.out.println(track.toString());
+//                s.sendMessage(new TextMessage(track.toString()));
+                s.sendMessage(new TextMessage("hello"));
             }
         }
-
-        System.out.println("Track ID: " + websocketMessage.getTrackId());
     }
 
     @Override

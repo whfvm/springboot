@@ -16,6 +16,8 @@ import wthfmv.bandwith.domain.team.repository.TeamRepository;
 import wthfmv.bandwith.domain.teamMember.entity.Position;
 import wthfmv.bandwith.domain.teamMember.entity.TeamMember;
 import wthfmv.bandwith.domain.teamMember.repository.TeamMemberRepository;
+import wthfmv.bandwith.domain.track.entity.Track;
+import wthfmv.bandwith.domain.track.repository.TrackRepository;
 import wthfmv.bandwith.global.security.jwt.JwtProvider;
 import wthfmv.bandwith.global.security.userDetails.CustomUserDetails;
 
@@ -29,7 +31,7 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final TeamMemberRepository teamMemberRepository;
     private final MemberRepository memberRepository;
-    private final JwtProvider jwtProvider;
+    private final TrackRepository trackRepository;
 
     private final Map<String, String> joinCode = new HashMap<>();
 
@@ -101,7 +103,9 @@ public class TeamService {
                 () -> new RuntimeException("해당 팀 없음")
         );
 
-        return new TeamRes(team);
+        List<Track> trackList = trackRepository.findByBandId(teamId);
+
+        return new TeamRes(team, trackList);
     }
 
     @Transactional(readOnly = true)

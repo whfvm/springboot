@@ -1,5 +1,6 @@
 package wthfmv.bandwith.domain.websocket.configuration;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
@@ -8,9 +9,14 @@ import wthfmv.bandwith.domain.websocket.handler.CustomWebsocketHandler;
 
 @Configuration
 @EnableWebSocket
+@RequiredArgsConstructor
 public class WebsocketConfig implements WebSocketConfigurer {
+
+    private final CustomWebsocketHandler customWebsocketHandler;
+
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new CustomWebsocketHandler(), "/ws").setAllowedOrigins("*");
+        registry.addHandler(customWebsocketHandler, "/ws")
+                .setAllowedOrigins("*");
     }
 }

@@ -44,12 +44,9 @@ public class TeamController {
      * @return
      */
     @GetMapping()
-    public ResponseEntity<?> team(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+    public ResponseEntity<TeamRes> team(
             @RequestParam String teamId
     ){
-
-        String userUUID = customUserDetails.getUuid().toString();
         TeamRes teamRes = teamService.team(teamId);
 
         return ResponseEntity.ok().body(
