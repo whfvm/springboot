@@ -46,7 +46,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/track").authenticated()
                         //팀 관련 API
                         .requestMatchers(HttpMethod.POST, "/team").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/team/**", "/team").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/team/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/team").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/team").authenticated()
                         .requestMatchers(
                                 "/v3/api-docs/**",
