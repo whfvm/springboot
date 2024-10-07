@@ -42,7 +42,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/member").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/member").authenticated()
                         // 트랙 관련 API
-                        .requestMatchers(HttpMethod.POST, "/track").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/track").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/track").authenticated()
                         //팀 관련 API
                         .requestMatchers(HttpMethod.POST, "/team").authenticated()
                         .requestMatchers(HttpMethod.GET, "/team/**", "/team").authenticated()
