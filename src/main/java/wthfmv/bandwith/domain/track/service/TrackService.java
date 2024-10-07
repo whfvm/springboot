@@ -14,10 +14,17 @@ import java.util.Optional;
 public class TrackService {
     private final TrackRepository trackRepository;
 
+    @Transactional
     public void postTrack(TrackPostReq trackPostReq) {
         trackRepository.save(new Track(trackPostReq));
     }
 
+    @Transactional
+    public Object getTrack(String trackId){
+        return trackRepository.findById(trackId).orElseThrow(
+                () -> new RuntimeException("해당 트랙 없음")
+        );
+    }
     @Transactional
     public Optional<Track> updateAndGetTrack(String id) {
         return trackRepository.findById(id);
