@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.Map;
 import java.util.UUID;
 
-@Document(collation = "track")
+@Document(collection = "track")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

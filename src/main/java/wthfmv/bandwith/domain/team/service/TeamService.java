@@ -18,7 +18,6 @@ import wthfmv.bandwith.domain.teamMember.entity.TeamMember;
 import wthfmv.bandwith.domain.teamMember.repository.TeamMemberRepository;
 import wthfmv.bandwith.domain.track.entity.Track;
 import wthfmv.bandwith.domain.track.repository.TrackRepository;
-import wthfmv.bandwith.global.security.jwt.JwtProvider;
 import wthfmv.bandwith.global.security.userDetails.CustomUserDetails;
 
 import java.util.*;
