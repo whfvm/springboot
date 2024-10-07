@@ -43,7 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/member").authenticated()
                         // 트랙 관련 API
                         .requestMatchers(HttpMethod.POST, "/track").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/track").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/track").authenticated()
                         //팀 관련 API
                         .requestMatchers(HttpMethod.POST, "/team").authenticated()
                         .requestMatchers(HttpMethod.GET, "/team/**").authenticated()
