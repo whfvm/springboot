@@ -3,13 +3,15 @@ package wthfmv.bandwith.domain.team.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import wthfmv.bandwith.domain.team.dto.req.Create;
+import wthfmv.bandwith.domain.team.dto.req.TeamCreateReq;
+import wthfmv.bandwith.domain.team.dto.res.TeamListRes;
 import wthfmv.bandwith.domain.team.dto.res.TeamRes;
 import wthfmv.bandwith.domain.team.service.TeamService;
 import wthfmv.bandwith.global.security.userDetails.CustomUserDetails;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,13 +26,13 @@ public class TeamController {
 
     /**
      *
-     * @param create
+     * @param teamCreateReq
      * @return
      */
     @PostMapping()
-    public ResponseEntity<String> create(Create create){
+    public ResponseEntity<String> create(@RequestBody TeamCreateReq teamCreateReq){
 
-        teamService.create(create);
+        teamService.create(teamCreateReq);
 
         return ResponseEntity.ok().body(
             "팀 저장 완료"
@@ -42,12 +44,9 @@ public class TeamController {
      * @return
      */
     @GetMapping()
-    public ResponseEntity<?> team(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam(defaultValue = "a") String teamId
+    public ResponseEntity<TeamRes> team(
+            @RequestParam String teamId
     ){
-
-        String userUUID = customUserDetails.getUuid().toString();
         TeamRes teamRes = teamService.team(teamId);
 
         return ResponseEntity.ok().body(
@@ -56,13 +55,13 @@ public class TeamController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> teamList(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+    public ResponseEntity<List<TeamListRes>> teamList(@AuthenticationPrincipal CustomUserDetails customUserDetails){
 
         String userUUID = customUserDetails.getUuid().toString();
 
-        return ResponseEntity.ok().body(
-                userUUID
-        );
+        List<TeamListRes> teamListRes = teamService.list(userUUID);
+
+        return ResponseEntity.ok().body(teamListRes);
     }
 
     /**
@@ -87,8 +86,8 @@ public class TeamController {
     public ResponseEntity<String> publish(
             @RequestParam String bandID
     ){
-        String publish = teamService.publish(bandID);
-        return ResponseEntity.ok().body(publish);
+        String randomCode = teamService.publish(bandID);
+        return ResponseEntity.ok().body(randomCode);
     }
 
     /**
@@ -100,12 +99,10 @@ public class TeamController {
     public ResponseEntity<String> sign(
             @RequestParam String code
     ){
-        // 1. 토큰에서 멤버 uuid 가져옴
-
         teamService.sign(code);
 
        return ResponseEntity.ok().body(
-               "a"
+               "가입완료"
        );
     }
 }

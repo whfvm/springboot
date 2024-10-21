@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import wthfmv.bandwith.domain.member.dto.req.MemberUpdateReq;
 import wthfmv.bandwith.domain.teamMember.entity.TeamMember;
 
 import java.time.LocalDate;
@@ -56,5 +57,11 @@ public class Member {
         this.name = "BANDWITH";
         this.provider = provider;
         this.providerId = providerId;
+    }
+
+    public void update(MemberUpdateReq memberUpdateReq) {
+        this.birth = memberUpdateReq.getBirth() == null ? this.birth : memberUpdateReq.getBirth();
+        this.name = memberUpdateReq.getName() == null ? this.name : memberUpdateReq.getName();
+        this.introduce = memberUpdateReq.getIntroduce() == null ? this.introduce : memberUpdateReq.getIntroduce();
     }
 }

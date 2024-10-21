@@ -1,24 +1,27 @@
 package wthfmv.bandwith.domain.team.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wthfmv.bandwith.domain.member.entity.Member;
 import wthfmv.bandwith.domain.member.repository.MemberRepository;
-import wthfmv.bandwith.domain.team.dto.req.Create;
+import wthfmv.bandwith.domain.team.dto.req.TeamCreateReq;
+import wthfmv.bandwith.domain.team.dto.res.TeamListRes;
 import wthfmv.bandwith.domain.team.dto.res.TeamRes;
 import wthfmv.bandwith.domain.team.entity.Team;
 import wthfmv.bandwith.domain.team.repository.TeamRepository;
 import wthfmv.bandwith.domain.teamMember.entity.Position;
 import wthfmv.bandwith.domain.teamMember.entity.TeamMember;
 import wthfmv.bandwith.domain.teamMember.repository.TeamMemberRepository;
-import wthfmv.bandwith.global.security.jwt.JwtProvider;
+import wthfmv.bandwith.domain.track.entity.Track;
+import wthfmv.bandwith.domain.track.repository.TrackRepository;
 import wthfmv.bandwith.global.security.userDetails.CustomUserDetails;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +30,12 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final TeamMemberRepository teamMemberRepository;
     private final MemberRepository memberRepository;
-    private final JwtProvider jwtProvider;
+    private final TrackRepository trackRepository;
+
+    private final Map<String, String> joinCode = new HashMap<>();
 
     @Transactional
-    public void create(Create create) {
+    public void create(TeamCreateReq teamCreateReq) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -39,15 +44,11 @@ public class TeamService {
                 () -> new RuntimeException(customUserDetails.getUuid() + "멤버 없음")
         );
 
-        Team team = new Team(
-                create.getName(),
-                create.getLimitMember(),
-                create.getProfileImage()
-        );
+        Team team = new Team(teamCreateReq);
 
-        teamRepository.save(team);
+        Team savedTeam = teamRepository.save(team);
 
-        TeamMember teamMember = new TeamMember(Position.LEADER, member, team);
+        TeamMember teamMember = new TeamMember(Position.LEADER, member, savedTeam, null);
 
         teamMemberRepository.save(teamMember);
     }
@@ -58,15 +59,18 @@ public class TeamService {
     }
 
     @Transactional
-    public String publish(String bandID) {
+    public String publish(String teamId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        Member member = memberRepository.findById(customUserDetails.getUuid()).orElseThrow(
-                () -> new RuntimeException(customUserDetails.getUuid() + "멤버 없음")
-        );
+        if(teamMemberRepository.existsByPositionAndTeamIdAndMemberId(Position.LEADER, UUID.fromString(teamId),customUserDetails.getUuid())){
+            String randomCode = RandomStringUtils.random(6, true, true);
+            joinCode.put(randomCode, teamId);
 
-        return jwtProvider.createParticipationCode(UUID.fromString(bandID));
+            return randomCode;
+        }
+
+        return "XXXXXX";
     }
 
     @Transactional
@@ -78,16 +82,17 @@ public class TeamService {
                 () -> new RuntimeException(customUserDetails.getUuid() + "멤버 없음")
         );
 
-        String teamID = jwtProvider.getID(code);
+        String teamId = joinCode.get(code);
+        joinCode.remove(code);
 
-        Team team = teamRepository.findById(UUID.fromString(teamID)).orElseThrow(
+        Team team = teamRepository.findById(UUID.fromString(teamId)).orElseThrow(
                 () -> new RuntimeException("해당 팀 없음")
         );
 
         if(teamMemberRepository.findByMemberAndTeam(member, team).isPresent()){
             throw new RuntimeException("이미 가입된 멤버입니다.");
         } else {
-           teamMemberRepository.save(new TeamMember(Position.MEMBER, member, team));
+           teamMemberRepository.save(new TeamMember(Position.MEMBER, member, team, null));
         }
     }
 
@@ -97,6 +102,17 @@ public class TeamService {
                 () -> new RuntimeException("해당 팀 없음")
         );
 
-        return new TeamRes(team);
+        List<Track> trackList = trackRepository.findByBandId(teamId);
+
+        return new TeamRes(team, trackList);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TeamListRes> list(String userUUID) {
+        List<TeamMember> teamMembers = teamMemberRepository.findByMember(UUID.fromString(userUUID));
+
+        return teamMembers.stream()
+                .map(TeamListRes::new)
+                .collect(Collectors.toList());
     }
 }

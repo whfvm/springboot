@@ -29,7 +29,6 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity
                 .httpBasic(HttpBasicConfigurer::disable)
-                .cors(CorsConfigurer::disable)
                 .formLogin(FormLoginConfigurer::disable)
                 .csrf(CsrfConfigurer::disable)
                 .sessionManagement(SessionManagementConfigurer::disable)
@@ -37,6 +36,19 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeRequest) -> authorizeRequest
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/login/**").permitAll()
+                        // 웹소켓 연결
+                        .requestMatchers("/ws/**").permitAll()
+                        //멤버 관련 API
+                        .requestMatchers(HttpMethod.GET, "/member").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/member").authenticated()
+                        // 트랙 관련 API
+                        .requestMatchers(HttpMethod.POST, "/track").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/track").authenticated()
+                        //팀 관련 API
+                        .requestMatchers(HttpMethod.POST, "/team").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/team/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/team").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/team").authenticated()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",

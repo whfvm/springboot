@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import wthfmv.bandwith.domain.team.service.TeamService;
+import wthfmv.bandwith.domain.team.dto.req.TeamCreateReq;
 import wthfmv.bandwith.domain.teamMember.entity.TeamMember;
 
 import java.time.LocalDate;
@@ -19,8 +19,9 @@ import java.util.UUID;
 public class Team {
 
     @Id
-    @Column(name = "member_id")
-    private String id;
+    @GeneratedValue
+    @Column(name = "team_id", updatable = false, nullable = false)
+    private UUID id;
 
     @Column(name = "team_name")
     private String name;
@@ -44,6 +45,14 @@ public class Team {
         this.name = name;
         this.limitMember = limitMember;
         this.profileImage = profileImage;
+        this.createdAt = LocalDate.now();
+        this.policy = Policy.FREE;
+    }
+
+    public Team(TeamCreateReq teamCreateReq){
+        this.name = teamCreateReq.getName();
+        this.profileImage = teamCreateReq.getProfileImage();
+        this.limitMember = teamCreateReq.getLimitMember();
         this.createdAt = LocalDate.now();
         this.policy = Policy.FREE;
     }
