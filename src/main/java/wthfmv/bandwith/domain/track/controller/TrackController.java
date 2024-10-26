@@ -22,7 +22,7 @@ public class TrackController {
 
     @GetMapping()
     public ResponseEntity<Track> getTrack(
-            @RequestBody String trackId
+            @RequestParam String trackId
     ){
         Track track = (Track) trackService.getTrack(trackId);
 
