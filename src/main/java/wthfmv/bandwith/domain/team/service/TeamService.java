@@ -2,6 +2,7 @@ package wthfmv.bandwith.domain.team.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import wthfmv.bandwith.domain.track.repository.TrackRepository;
 import wthfmv.bandwith.global.security.userDetails.CustomUserDetails;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,8 +33,7 @@ public class TeamService {
     private final TeamMemberRepository teamMemberRepository;
     private final MemberRepository memberRepository;
     private final TrackRepository trackRepository;
-
-    private final Map<String, String> joinCode = new HashMap<>();
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Transactional
     public void create(TeamCreateReq teamCreateReq) {
@@ -65,12 +66,12 @@ public class TeamService {
 
         if(teamMemberRepository.existsByPositionAndTeamIdAndMemberId(Position.LEADER, UUID.fromString(teamId),customUserDetails.getUuid())){
             String randomCode = RandomStringUtils.random(6, true, true);
-            joinCode.put(randomCode, teamId);
+            redisTemplate.opsForValue().set(randomCode, teamId, 30, TimeUnit.MINUTES);
 
             return randomCode;
         }
 
-        return "XXXXXX";
+        return "!@#$%^";
     }
 
     @Transactional
@@ -82,8 +83,11 @@ public class TeamService {
                 () -> new RuntimeException(customUserDetails.getUuid() + "멤버 없음")
         );
 
-        String teamId = joinCode.get(code);
-        joinCode.remove(code);
+        String teamId = (String) redisTemplate.opsForValue().get(code);
+
+        if(teamId == null){
+            throw new RuntimeException("Error: 가입 코드 찾을 수 없음: " + code);
+        }
 
         Team team = teamRepository.findById(UUID.fromString(teamId)).orElseThrow(
                 () -> new RuntimeException("해당 팀 없음")

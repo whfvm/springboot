@@ -53,7 +53,7 @@ public class CustomWebsocketHandler extends TextWebSocketHandler {
 //                Optional<Track> track = trackService.updateAndGetTrack(websocketMessage.getTrackId());
 //                System.out.println(track.toString());
 //                s.sendMessage(new TextMessage(track.toString()));
-                s.sendMessage(new TextMessage("hello"));
+                s.sendMessage(new TextMessage(websocketMessage.getQuery()));
             }
         }
     }
