@@ -10,8 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import wthfmv.bandwith.domain.member.entity.Member;
 import wthfmv.bandwith.domain.member.repository.MemberRepository;
 import wthfmv.bandwith.domain.team.dto.req.TeamCreateReq;
+import wthfmv.bandwith.domain.team.dto.res.TeamCreateRes;
 import wthfmv.bandwith.domain.team.dto.res.TeamListRes;
 import wthfmv.bandwith.domain.team.dto.res.TeamRes;
+import wthfmv.bandwith.domain.team.dto.res.TeamSignRes;
 import wthfmv.bandwith.domain.team.entity.Team;
 import wthfmv.bandwith.domain.team.repository.TeamRepository;
 import wthfmv.bandwith.domain.teamMember.entity.Position;
@@ -36,7 +38,7 @@ public class TeamService {
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Transactional
-    public void create(TeamCreateReq teamCreateReq) {
+    public TeamCreateRes create(TeamCreateReq teamCreateReq) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -52,11 +54,17 @@ public class TeamService {
         TeamMember teamMember = new TeamMember(Position.LEADER, member, savedTeam, null);
 
         teamMemberRepository.save(teamMember);
+
+        return new TeamCreateRes(team.getId().toString(), team.getName());
     }
 
     @Transactional
-    public void delete(String search) {
-        teamRepository.deleteById(UUID.fromString(search));
+    public void delete(String teamId, String userUUID) {
+        if(teamMemberRepository.existsByPositionAndTeamIdAndMemberId(Position.LEADER, UUID.fromString(teamId), UUID.fromString(userUUID))){
+            teamRepository.deleteById(UUID.fromString(teamId));
+        } else {
+            throw new RuntimeException("지우려는 팀의 리더가 아닙니다");
+        }
     }
 
     @Transactional
@@ -75,7 +83,7 @@ public class TeamService {
     }
 
     @Transactional
-    public void sign(String code) {
+    public TeamSignRes sign(String code) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
@@ -97,6 +105,7 @@ public class TeamService {
             throw new RuntimeException("이미 가입된 멤버입니다.");
         } else {
            teamMemberRepository.save(new TeamMember(Position.MEMBER, member, team, null));
+           return new TeamSignRes(team.getId().toString(), team.getName());
         }
     }
 
