@@ -64,9 +64,9 @@ class TrackRes{
     // 곡이름, 가수 만든 날짜
 
     public TrackRes(Track track){
-        this.title = (String) track.getMetaData().get("title");
+        this.title = (String) track.getMetadata().get("title");
         this.createdAt = track.getCreatedAt();
-        this.artist = (String) track.getMetaData().get("artist");
+        this.artist = (String) track.getMetadata().get("artist");
         this.id = track.getId();
     }
 }
