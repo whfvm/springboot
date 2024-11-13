@@ -49,6 +49,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/team/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/team").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/team").authenticated()
+                        // 팀-멤버 관련 API
+                        .requestMatchers(HttpMethod.PUT, "/teamMember").authenticated()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",

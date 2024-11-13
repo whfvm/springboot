@@ -45,4 +45,8 @@ public class TeamMember {
         this.team = team;
         this.part = part;
     }
+
+    public void updatePart(String part) {
+        this.part = part;
+    }
 }

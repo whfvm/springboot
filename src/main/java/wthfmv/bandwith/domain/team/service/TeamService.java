@@ -115,7 +115,7 @@ public class TeamService {
                 () -> new RuntimeException("해당 팀 없음")
         );
 
-        List<Track> trackList = trackRepository.findByBandId(teamId);
+        List<Track> trackList = trackRepository.findByBandId(UUID.fromString(teamId));
 
         return new TeamRes(team, trackList);
     }

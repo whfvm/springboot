@@ -6,9 +6,10 @@ import org.springframework.stereotype.Repository;
 import wthfmv.bandwith.domain.track.entity.Track;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public interface TrackRepository extends MongoRepository<Track, String> {
-    @Query("{ 'metaData.band_Id': ?0 }")
-    List<Track> findByBandId(String bandId);
+    @Query("{ 'band_Id': ?0 }")
+    List<Track> findByBandId(UUID bandId);
 }
