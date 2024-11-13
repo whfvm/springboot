@@ -24,15 +24,15 @@ public class TeamMemberService {
     @Transactional
     public void put(TeamMemberPutReq teamMemberPutReq, String userUUID) {
         Member member = memberRepository.findById(UUID.fromString(userUUID)).orElseThrow(
-                () -> new RuntimeException("")
+                () -> new RuntimeException("해당 멤버 없음")
         );
 
         Team team = teamRepository.findById(UUID.fromString(teamMemberPutReq.getBandId())).orElseThrow(
-                () -> new RuntimeException("")
+                () -> new RuntimeException("해당 팀 없음")
         );
 
         TeamMember teamMember = teamMemberRepository.findByMemberAndTeam(member, team).orElseThrow(
-                () -> new RuntimeException("")
+                () -> new RuntimeException("해당 팀에 가입되어 있지 않음")
         );
 
         teamMember.updatePart(teamMemberPutReq.getPart());

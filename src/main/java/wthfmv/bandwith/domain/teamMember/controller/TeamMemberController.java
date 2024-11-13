@@ -4,24 +4,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import wthfmv.bandwith.domain.team.dto.req.TeamCreateReq;
 import wthfmv.bandwith.domain.team.dto.res.TeamCreateRes;
 import wthfmv.bandwith.domain.teamMember.dto.req.TeamMemberPutReq;
 import wthfmv.bandwith.domain.teamMember.service.TeamMemberService;
 import wthfmv.bandwith.global.security.userDetails.CustomUserDetails;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/teamMember")
 public class TeamMemberController {
 
     private final TeamMemberService teamMemberService;
 
-    @PutMapping
+    @PutMapping()
     public ResponseEntity<?> put(
             @RequestBody TeamMemberPutReq teamMemberPutReq,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
@@ -30,7 +27,7 @@ public class TeamMemberController {
         teamMemberService.put(teamMemberPutReq, userUUID);
 
         return ResponseEntity.ok().body(
-                "OK"
+                "정보 수정 완료"
         );
     }
 }
