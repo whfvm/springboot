@@ -6,8 +6,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import wthfmv.bandwith.domain.team.dto.req.TeamCreateReq;
+import wthfmv.bandwith.domain.team.dto.res.TeamCreateRes;
 import wthfmv.bandwith.domain.team.dto.res.TeamListRes;
 import wthfmv.bandwith.domain.team.dto.res.TeamRes;
+import wthfmv.bandwith.domain.team.dto.res.TeamSignRes;
 import wthfmv.bandwith.domain.team.service.TeamService;
 import wthfmv.bandwith.global.security.userDetails.CustomUserDetails;
 
@@ -30,12 +32,12 @@ public class TeamController {
      * @return
      */
     @PostMapping()
-    public ResponseEntity<String> create(@RequestBody TeamCreateReq teamCreateReq){
+    public ResponseEntity<TeamCreateRes> create(@RequestBody TeamCreateReq teamCreateReq){
 
-        teamService.create(teamCreateReq);
+        TeamCreateRes teamCreateRes = teamService.create(teamCreateReq);
 
         return ResponseEntity.ok().body(
-            "팀 저장 완료"
+            teamCreateRes
         );
     }
 
@@ -66,16 +68,17 @@ public class TeamController {
 
     /**
      *
-     * @param field
-     * @param search
+     * @param customUserDetails
+     * @param teamId 지우려는 팀 아이디
      * @return
      */
     @DeleteMapping()
     public ResponseEntity<String> delete(
-            @RequestParam(defaultValue = "id") String field,
-            @RequestParam String search
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam String teamId
     ){
-        teamService.delete(search);
+        String userUUID = customUserDetails.getUuid().toString();
+        teamService.delete(teamId, userUUID);
 
         return ResponseEntity.ok().body(
                 "팀 삭제 완료"
@@ -96,13 +99,13 @@ public class TeamController {
      * @return
      */
     @GetMapping("/sign")
-    public ResponseEntity<String> sign(
+    public ResponseEntity<TeamSignRes> sign(
             @RequestParam String code
     ){
-        teamService.sign(code);
+        TeamSignRes sign = teamService.sign(code);
 
-       return ResponseEntity.ok().body(
-               "가입완료"
+        return ResponseEntity.ok().body(
+               sign
        );
     }
 }

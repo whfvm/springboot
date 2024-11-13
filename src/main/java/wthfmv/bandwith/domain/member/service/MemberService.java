@@ -55,7 +55,7 @@ public class MemberService {
             RefreshToken refreshTokenObject = new RefreshToken(refreshToken, member, LocalDateTime.now());
             refreshTokenRepository.save(refreshTokenObject);
 
-            return new TokenRes(accessToken, refreshToken);
+            return new TokenRes(accessToken, refreshToken, true);
         } else {
             // 가입하지 않은 유저면
             Member newMember = new Member("google", id);
@@ -68,7 +68,7 @@ public class MemberService {
             RefreshToken refreshTokenObject = new RefreshToken(refreshToken, newMember, LocalDateTime.now());
             refreshTokenRepository.save(refreshTokenObject);
 
-            return new TokenRes(accessToken, refreshToken);
+            return new TokenRes(accessToken, refreshToken, false);
         }
     }
 

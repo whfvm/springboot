@@ -2,9 +2,9 @@ package wthfmv.bandwith.domain.refreshToken.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import wthfmv.bandwith.domain.member.entity.Member;
@@ -12,8 +12,9 @@ import wthfmv.bandwith.domain.member.entity.Member;
 import java.time.LocalDateTime;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Setter(AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RefreshToken {
     @Id
     @Column(name = "refreshToken_id")

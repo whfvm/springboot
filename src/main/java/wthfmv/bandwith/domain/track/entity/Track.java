@@ -18,16 +18,18 @@ import java.util.UUID;
 public class Track {
     @Id
     private String id;
+    private UUID band_id;
 
-    private Map<String, Object> metaData;
+    private Map<String, Object> metadata;
 
-    private Map<String, Object> track;
+    private Map<String, Object> tracks;
 
     private LocalDate createdAt;
 
     public Track(TrackPostReq trackPostReq){
-        this.metaData = trackPostReq.getMetaData();
-        this.track = trackPostReq.getTrack();
+        this.band_id = UUID.fromString(trackPostReq.getBand_id());
+        this.metadata = trackPostReq.getMetaData();
+        this.tracks = trackPostReq.getTracks();
         this.createdAt = LocalDate.now();
     }
 }

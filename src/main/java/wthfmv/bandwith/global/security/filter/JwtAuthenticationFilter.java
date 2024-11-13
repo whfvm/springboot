@@ -1,4 +1,4 @@
-package wthfmv.bandwith.global.security.jwt;
+package wthfmv.bandwith.global.security.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import wthfmv.bandwith.domain.refreshToken.entity.RefreshToken;
 import wthfmv.bandwith.domain.refreshToken.repository.RefreshTokenRepository;
+import wthfmv.bandwith.global.security.jwt.JwtProvider;
 import wthfmv.bandwith.global.security.userDetails.CustomUserDetailService;
 
 import java.io.IOException;

@@ -11,7 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import wthfmv.bandwith.global.security.jwt.JwtAuthenticationFilter;
+import wthfmv.bandwith.global.security.filter.JwtAuthenticationFilter;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -49,6 +49,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/team/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/team").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/team").authenticated()
+                        // 팀-멤버 관련 API
+                        .requestMatchers(HttpMethod.PUT, "/teamMember").authenticated()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",

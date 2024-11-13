@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wthfmv.bandwith.domain.track.dto.req.TrackPostReq;
+import wthfmv.bandwith.domain.track.dto.res.TrackRes;
 import wthfmv.bandwith.domain.track.entity.Track;
 import wthfmv.bandwith.domain.track.service.TrackService;
 
@@ -21,13 +22,13 @@ public class TrackController {
     }
 
     @GetMapping()
-    public ResponseEntity<Track> getTrack(
-            @RequestBody String trackId
+    public ResponseEntity<TrackRes> getTrack(
+            @RequestParam String trackId
     ){
-        Track track = (Track) trackService.getTrack(trackId);
+        TrackRes trackRes = trackService.getTrack(trackId);
 
         return ResponseEntity.ok().body(
-                track
+                trackRes
         );
     }
 }

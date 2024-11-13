@@ -20,6 +20,7 @@ public class CustomWebsocketHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Map<String, Set<WebSocketSession>> sessionStore = new HashMap<>();
 
+
     private final TrackService trackService;
 
     @Override
@@ -50,10 +51,8 @@ public class CustomWebsocketHandler extends TextWebSocketHandler {
         // 메시지 보내기
         for (WebSocketSession s : sessionSet) {
             if (s.isOpen()) { // 열려있으면
-//                Optional<Track> track = trackService.updateAndGetTrack(websocketMessage.getTrackId());
-//                System.out.println(track.toString());
-//                s.sendMessage(new TextMessage(track.toString()));
-                s.sendMessage(new TextMessage("hello"));
+                trackService.updateAndGetTrack(websocketMessage);
+                s.sendMessage(new TextMessage(websocketMessage.getTrackId()));
             }
         }
     }
