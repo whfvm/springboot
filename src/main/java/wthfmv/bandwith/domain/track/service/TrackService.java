@@ -15,6 +15,7 @@ import wthfmv.bandwith.domain.track.repository.TrackRepository;
 import wthfmv.bandwith.domain.websocket.message.WebSocketMessageMethod;
 import wthfmv.bandwith.domain.websocket.message.WebsocketMessage;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -48,7 +49,16 @@ public class TrackService {
         }
     }
     @Transactional
-    public Optional<Track> updateAndGetTrack(WebsocketMessage websocketMessage) {
+    public String updateAndGetTrack(WebsocketMessage websocketMessage) {
+
+        //트랙아이디로 찾기 uuid 찾기
+        String redisUUID = (String) redisTemplate.opsForValue().get(websocketMessage.getTrackId());
+        String newUUID = UUID.randomUUID().toString();
+        redisTemplate.opsForValue().set(websocketMessage.getTrackId(), newUUID , 30, TimeUnit.MINUTES);
+
+        if(!Objects.equals(redisUUID, websocketMessage.getUuid())){
+            throw new RuntimeException("갱신 필요");
+        }
 
         Query query = new Query(Criteria.where("_id").is(websocketMessage.getTrackId()));
         for(int i = 0; i < websocketMessage.getValue().length; i++){
@@ -67,6 +77,6 @@ public class TrackService {
 
         }
 
-        return trackRepository.findById(websocketMessage.getTrackId());
+        return newUUID;
     }
 }

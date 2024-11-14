@@ -48,11 +48,14 @@ public class CustomWebsocketHandler extends TextWebSocketHandler {
         // 세션 가져오기
         Set<WebSocketSession> sessionSet = sessionStore.get(websocketMessage.getTrackId());
 
+        // 정보 업데이트 시도
+        String newUUID = trackService.updateAndGetTrack(websocketMessage);
+        websocketMessage.setUuid(newUUID);
+
         // 메시지 보내기
         for (WebSocketSession s : sessionSet) {
-            if (s.isOpen()) { // 열려있으면
-                trackService.updateAndGetTrack(websocketMessage);
-                s.sendMessage(new TextMessage(websocketMessage.getTrackId()));
+            if (s.isOpen()) { // 열려있으면=
+                s.sendMessage(new TextMessage(websocketMessage.toString()));
             }
         }
     }

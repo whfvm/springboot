@@ -28,7 +28,7 @@ public class Track {
 
     public Track(TrackPostReq trackPostReq){
         this.band_id = UUID.fromString(trackPostReq.getBand_id());
-        this.metadata = trackPostReq.getMetaData();
+        this.metadata = trackPostReq.getMetadata();
         this.tracks = trackPostReq.getTracks();
         this.createdAt = LocalDate.now();
     }
