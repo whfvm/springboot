@@ -10,6 +10,6 @@ import java.util.UUID;
 
 @Repository
 public interface TrackRepository extends MongoRepository<Track, String> {
-    @Query("{ 'band_Id': ?0 }")
+    @Query("{ 'band_id': ?0 }")
     List<Track> findByBandId(UUID bandId);
 }
