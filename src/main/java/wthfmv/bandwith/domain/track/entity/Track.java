@@ -18,7 +18,7 @@ import java.util.UUID;
 public class Track {
     @Id
     private String id;
-    private UUID band_id;
+    private String band_id;
 
     private Map<String, Object> metadata;
 
@@ -27,7 +27,7 @@ public class Track {
     private LocalDate createdAt;
 
     public Track(TrackPostReq trackPostReq){
-        this.band_id = UUID.fromString(trackPostReq.getBand_id());
+        this.band_id = trackPostReq.getBand_id();
         this.metadata = trackPostReq.getMetadata();
         this.tracks = trackPostReq.getTracks();
         this.createdAt = LocalDate.now();
