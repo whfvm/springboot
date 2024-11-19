@@ -1,6 +1,7 @@
 package wthfmv.bandwith.domain.track.service;
 
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -53,14 +54,13 @@ public class TrackService {
 
         //트랙아이디로 찾기 uuid 찾기
         String redisUUID = (String) redisTemplate.opsForValue().get(websocketMessage.getTrackId());
-        String newUUID = UUID.randomUUID().toString();
-        redisTemplate.opsForValue().set(websocketMessage.getTrackId(), newUUID , 30, TimeUnit.MINUTES);
-
         if(!Objects.equals(redisUUID, websocketMessage.getUuid())){
             throw new RuntimeException("갱신 필요");
         }
+        String newUUID = UUID.randomUUID().toString();
+        redisTemplate.opsForValue().set(websocketMessage.getTrackId(), newUUID , 30, TimeUnit.MINUTES);
 
-        Query query = new Query(Criteria.where("_id").is(websocketMessage.getTrackId()));
+        Query query = new Query(Criteria.where("_id").is(new ObjectId(websocketMessage.getTrackId())));
         for(int i = 0; i < websocketMessage.getValue().length; i++){
             switch (websocketMessage.getWebSocketMessageMethod()[i]){
                 case DELETE -> {
