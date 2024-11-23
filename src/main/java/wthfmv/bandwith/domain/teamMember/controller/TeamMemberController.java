@@ -23,11 +23,22 @@ public class TeamMemberController {
             @RequestBody TeamMemberPutReq teamMemberPutReq,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ){
-        String userUUID = customUserDetails.getUuid().toString();
-        teamMemberService.put(teamMemberPutReq, userUUID);
+        teamMemberService.put(teamMemberPutReq, customUserDetails.getUuid());
 
         return ResponseEntity.ok().body(
                 "정보 수정 완료"
+        );
+    }
+
+    @DeleteMapping()
+    public ResponseEntity<String> delete(
+            @RequestParam String bandId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ){
+        teamMemberService.delete(bandId, customUserDetails.getUuid());
+
+        return ResponseEntity.ok().body(
+                bandId + "탈퇴 완료"
         );
     }
 }

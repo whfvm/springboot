@@ -80,6 +80,7 @@ public class MemberService {
         return new MemberRes(member);
     }
 
+    @Transactional
     public void update(UUID uuid, MemberUpdateReq memberUpdateReq) {
         Member member = memberRepository.findById(uuid).orElseThrow(
                 () -> new RuntimeException(uuid + "멤버 없음")
@@ -94,5 +95,13 @@ public class MemberService {
             teamRepository.save(team);
             teamMemberRepository.save(new TeamMember(Position.LEADER, member, team, null));
         }
+    }
+
+    @Transactional
+    public void delete(UUID uuid) {
+        if(teamMemberRepository.existsByPositionAndMemberId(Position.LEADER, uuid)){
+            throw new RuntimeException("리더인 밴드를 탈퇴, 삭제해 주세요");
+        }
+        memberRepository.deleteById(uuid);
     }
 }

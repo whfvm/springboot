@@ -42,4 +42,15 @@ public class MemberController {
 
         return ResponseEntity.ok().body(userDetails.getUuid().toString() + "업데이트 성공");
     }
+
+    // 회원 탈퇴
+    @DeleteMapping
+    public ResponseEntity<String> delete(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        memberService.delete(userDetails.getUuid());
+
+        return ResponseEntity.ok().body("탈퇴 완료");
+    }
 }

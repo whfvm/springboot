@@ -41,6 +41,7 @@ public class SecurityConfig {
                         //멤버 관련 API
                         .requestMatchers(HttpMethod.GET, "/member").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/member").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/member").authenticated()
                         // 트랙 관련 API
                         .requestMatchers(HttpMethod.POST, "/track").authenticated()
                         .requestMatchers(HttpMethod.GET, "/track").authenticated()
@@ -51,6 +52,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/team").authenticated()
                         // 팀-멤버 관련 API
                         .requestMatchers(HttpMethod.PUT, "/teamMember").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/teamMember").authenticated()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",

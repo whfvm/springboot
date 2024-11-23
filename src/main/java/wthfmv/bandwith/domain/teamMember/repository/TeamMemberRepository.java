@@ -1,6 +1,7 @@
 package wthfmv.bandwith.domain.teamMember.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -11,7 +12,6 @@ import wthfmv.bandwith.domain.teamMember.entity.TeamMember;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.UUID;
 
 @Repository
@@ -23,4 +23,11 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, UUID> {
 
     @Query("SELECT COUNT(tm) > 0 FROM TeamMember tm WHERE tm.position = :position AND tm.team.id = :teamId AND tm.member.id = :memberId")
     boolean existsByPositionAndTeamIdAndMemberId(@Param("position") Position position, @Param("teamId") UUID teamId, @Param("memberId") UUID memberId);
+
+    @Query("SELECT COUNT(tm) > 0 FROM TeamMember tm WHERE tm.position =:position AND tm.member.id = :memberId")
+    boolean existsByPositionAndMemberId(@Param("position") Position position, @Param("memberId") UUID memberId);
+
+    @Modifying
+    @Query("DELETE FROM TeamMember tm WHERE tm.position = :position AND tm.member.id = :memberId")
+    void deleteByPositionAndMemberId(@Param("position") Position position, @Param("memberId") UUID memberId);
 }

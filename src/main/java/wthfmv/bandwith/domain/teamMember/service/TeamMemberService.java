@@ -8,6 +8,7 @@ import wthfmv.bandwith.domain.member.repository.MemberRepository;
 import wthfmv.bandwith.domain.team.entity.Team;
 import wthfmv.bandwith.domain.team.repository.TeamRepository;
 import wthfmv.bandwith.domain.teamMember.dto.req.TeamMemberPutReq;
+import wthfmv.bandwith.domain.teamMember.entity.Position;
 import wthfmv.bandwith.domain.teamMember.entity.TeamMember;
 import wthfmv.bandwith.domain.teamMember.repository.TeamMemberRepository;
 
@@ -22,8 +23,8 @@ public class TeamMemberService {
     private final TeamRepository teamRepository;
 
     @Transactional
-    public void put(TeamMemberPutReq teamMemberPutReq, String userUUID) {
-        Member member = memberRepository.findById(UUID.fromString(userUUID)).orElseThrow(
+    public void put(TeamMemberPutReq teamMemberPutReq, UUID userUUID) {
+        Member member = memberRepository.findById(userUUID).orElseThrow(
                 () -> new RuntimeException("해당 멤버 없음")
         );
 
@@ -36,5 +37,10 @@ public class TeamMemberService {
         );
 
         teamMember.updatePart(teamMemberPutReq.getPart());
+    }
+
+    @Transactional
+    public void delete(String bandId, UUID uuid) {
+        teamMemberRepository.deleteByPositionAndMemberId(Position.MEMBER, uuid);
     }
 }
