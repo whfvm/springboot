@@ -8,16 +8,18 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import wthfmv.bandwith.domain.member.dto.req.LocalLoginReq;
 import wthfmv.bandwith.domain.member.dto.res.TokenRes;
+import wthfmv.bandwith.domain.member.service.AuthService;
 import wthfmv.bandwith.domain.member.service.MemberService;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
-public class LoginController {
+public class AuthController {
 
     private final RestTemplate restTemplate;
-    private final MemberService memberService;
+    private final AuthService authService;
     @Value("${google.token.url}")
     private String googleAccessTokenUrl;
 
@@ -31,12 +33,12 @@ public class LoginController {
     private String clientSecret;
 
     @GetMapping("/oauth2/google")
-    public ResponseEntity<?> googleLogin(
+    public ResponseEntity<TokenRes> googleLogin(
             @RequestParam("code") String code,
             @RequestParam("redirect") String redirect
     ){
         System.out.println(code);
-        String accessToken = createAccessToken(code, redirect);
+        String accessToken = createGoogleAccessToken(code, redirect);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + accessToken);
@@ -44,17 +46,22 @@ public class LoginController {
         JsonNode responseNode = restTemplate.exchange(googleResourceUrl, HttpMethod.GET, entity, JsonNode.class).getBody();
         System.out.println(responseNode);
         String id = responseNode.get("id").asText();
+        String email = responseNode.get("email").asText();
+        String name = responseNode.get("name").asText();
 
-        TokenRes tokenRes = memberService.googleOAuth(id);
+        TokenRes tokenRes = authService.googleOAuth(email, name);
         return ResponseEntity.ok(tokenRes);
     }
 
-    @GetMapping("/hello")
-    public String hello(){
-        return "hello";
+    @PostMapping("/oauth2/local")
+    public ResponseEntity<TokenRes> localLogin(
+            @RequestBody LocalLoginReq localLoginReq
+    ){
+        TokenRes tokenRes = authService.localAuth(localLoginReq);
+        return ResponseEntity.ok(tokenRes);
     }
 
-    private String createAccessToken(String code, String redirect){
+    private String createGoogleAccessToken(String code, String redirect){
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("code", code);
         params.add("client_id", clientId);

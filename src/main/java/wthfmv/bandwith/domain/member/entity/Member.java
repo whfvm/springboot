@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import wthfmv.bandwith.domain.member.dto.req.LocalLoginReq;
 import wthfmv.bandwith.domain.member.dto.req.MemberUpdateReq;
 import wthfmv.bandwith.domain.teamMember.entity.TeamMember;
 
@@ -26,9 +27,6 @@ public class Member {
     @Column(name = "member_provider")
     private String provider;
 
-    @Column(name = "member_provider_id")
-    private String providerId;
-
     @Column(name = "member_birth")
     private LocalDate birth;
 
@@ -41,6 +39,12 @@ public class Member {
     @Column(name = "member_profile_image")
     private String profileImage;
 
+    @Column(name = "member_email")
+    private String email;
+
+    @Column(name = "member_password")
+    private String password;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeamMember> teamMembers;
     public Member(LocalDate birth, String name, String introduce, String profileImage) {
@@ -50,13 +54,28 @@ public class Member {
         this.profileImage = profileImage;
     }
 
-    public Member(String provider, String providerId){
+    /**
+     * FOR GOOGLE
+     * @param provider
+     * @param email
+     */
+    public Member(String provider, String email, String name){
+        this.birth = LocalDate.now();
+        this.introduce = "자기소개를 작성해 주세요";
+        this.profileImage = null;
+        this.name = name;
+        this.provider = provider;
+        this.email = email;
+    }
+
+    public Member(LocalLoginReq localLoginReq, String provider, String password) {
         this.birth = LocalDate.now();
         this.introduce = "자기소개를 작성해 주세요";
         this.profileImage = null;
         this.name = "BANDWITH";
         this.provider = provider;
-        this.providerId = providerId;
+        this.email = localLoginReq.getEmail();
+        this.password = password;
     }
 
     public void update(MemberUpdateReq memberUpdateReq) {

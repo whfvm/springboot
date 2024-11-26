@@ -29,48 +29,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final JwtProvider jwtProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final TeamRepository teamRepository;
     private final TeamMemberRepository teamMemberRepository;
 
-    @Transactional
-    public TokenRes googleOAuth(String id) {
-        Optional<Member> optionalMember = memberRepository.findByProviderAndProviderId("google", id);
-
-        if(optionalMember.isPresent()){
-            // 이미 가입한 유저면
-            Member member = optionalMember.get();
-
-            String accessToken = jwtProvider.createAccessToken(member.getId());
-            String refreshToken = jwtProvider.createRefreshToken();
-
-            long count = refreshTokenRepository.countByMember(member);
-
-            if (count > 4) {
-                RefreshToken oldestToken = refreshTokenRepository.findFirstByMemberOrderByCreatedAtAsc(member);
-                refreshTokenRepository.delete(oldestToken);
-            }
-
-            RefreshToken refreshTokenObject = new RefreshToken(refreshToken, member, LocalDateTime.now());
-            refreshTokenRepository.save(refreshTokenObject);
-
-            return new TokenRes(accessToken, refreshToken, true);
-        } else {
-            // 가입하지 않은 유저면
-            Member newMember = new Member("google", id);
-
-            memberRepository.save(newMember);
-
-            String accessToken = jwtProvider.createAccessToken(newMember.getId());
-            String refreshToken = jwtProvider.createRefreshToken();
-
-            RefreshToken refreshTokenObject = new RefreshToken(refreshToken, newMember, LocalDateTime.now());
-            refreshTokenRepository.save(refreshTokenObject);
-
-            return new TokenRes(accessToken, refreshToken, false);
-        }
-    }
 
     public MemberRes member(UUID uuid) {
         Member member = memberRepository.findById(uuid).orElseThrow(

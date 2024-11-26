@@ -43,4 +43,9 @@ public class TeamMemberService {
     public void delete(String bandId, UUID uuid) {
         teamMemberRepository.deleteByPositionAndMemberId(Position.MEMBER, uuid);
     }
+
+    @Transactional
+    public void changeLeader(){
+
+    }
 }
