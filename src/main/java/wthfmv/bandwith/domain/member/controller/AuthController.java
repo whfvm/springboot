@@ -7,6 +7,7 @@ import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import wthfmv.bandwith.domain.member.dto.req.LocalLoginReq;
 import wthfmv.bandwith.domain.member.dto.res.TokenRes;
