@@ -61,7 +61,26 @@ public class AuthController {
         return ResponseEntity.ok(tokenRes);
     }
 
-    private String createGoogleAccessToken(String code, String redirect){
+//    private String createGoogleAccessToken(String code, String redirect){
+//        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+//        params.add("code", code);
+//        params.add("client_id", clientId);
+//        params.add("client_secret", clientSecret);
+//        params.add("redirect_uri", redirect);
+//        params.add("grant_type", "authorization_code");
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+//
+//        HttpEntity entity = new HttpEntity(params, headers);
+//
+//        ResponseEntity<JsonNode> responseNode = restTemplate.exchange(googleAccessTokenUrl, HttpMethod.POST, entity, JsonNode.class);
+//        JsonNode accessTokenNode = responseNode.getBody();
+//
+//        return accessTokenNode.get("access_token").asText();
+//    }
+
+    private String createGoogleAccessToken(String code, String redirect) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("code", code);
         params.add("client_id", clientId);
@@ -72,11 +91,21 @@ public class AuthController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        HttpEntity entity = new HttpEntity(params, headers);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
 
-        ResponseEntity<JsonNode> responseNode = restTemplate.exchange(googleAccessTokenUrl, HttpMethod.POST, entity, JsonNode.class);
-        JsonNode accessTokenNode = responseNode.getBody();
+        try {
+            ResponseEntity<JsonNode> responseNode = restTemplate.exchange(googleAccessTokenUrl, HttpMethod.POST, entity, JsonNode.class);
+            JsonNode accessTokenNode = responseNode.getBody();
 
-        return accessTokenNode.get("access_token").asText();
+            if (accessTokenNode == null || !accessTokenNode.has("access_token")) {
+                throw new IllegalStateException("Invalid response from Google: " + responseNode.getBody());
+            }
+
+            return accessTokenNode.get("access_token").asText();
+        } catch (HttpClientErrorException e) {
+            // Log the response for debugging
+            System.err.println("Google Token Exchange Error: " + e.getResponseBodyAsString());
+            throw e;
+        }
     }
 }
